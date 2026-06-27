@@ -33,19 +33,27 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:5173",
   "https://studyflow-ai-eight.vercel.app",
-  "https://studyflow-ai-git-main-karanmaurya-vercel.vercel.app",
-  "https://studyflow-7rctsucw0-karanmaurya-vercel.vercel.app",
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (Postman, server-to-server, etc.)
-      if (!origin) return callback(null, true);
+      // Allow requests with no Origin (Postman, server-to-server, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
 
+      // Allow localhost & production URL
       if (allowedOrigins.includes(origin)) {
         return callback(null, true);
       }
+
+      // Allow ANY Vercel deployment under your account
+      if (/^https:\/\/.*-karanmaurya-vercel\.vercel\.app$/.test(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("❌ Blocked by CORS:", origin);
 
       return callback(new Error("Not allowed by CORS"));
     },
