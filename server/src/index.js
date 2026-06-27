@@ -26,9 +26,29 @@ const app = express();
 // ========================
 // ✅ MIDDLEWARE
 // ========================
+// ========================
+// ✅ CORS CONFIGURATION
+// ========================
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://studyflow-ai-eight.vercel.app",
+  "https://studyflow-ai-git-main-karanmaurya-vercel.vercel.app",
+  "https://studyflow-7rctsucw0-karanmaurya-vercel.vercel.app",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL ||"http://localhost:5173",
+    origin: (origin, callback) => {
+      // Allow requests with no origin (Postman, server-to-server, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
   })
 );
